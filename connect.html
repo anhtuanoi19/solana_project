@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/base-58@0.0.1/Base58.min.js"></script>
+</head>
+<body>
+    <button onclick="connectWallet()">Connect</button>
+    <button onclick="mintNft()">MintNft</button>
+    <input type="file" id="fileInput">
+    <script>
+     const connectWallet= async ()=>{
+           await window.phantom.solana.connect();
+           let  publicKey =window.phantom.solana.publicKey.toBase58();
+            console.log("Connected Wallet Public Key:",publicKey);
+        }
+
+        // ==============================MintNft===================================
+    const priv_key= "cuI9h45-eERNRedL"
+        const mintNft = async ()=>{
+var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("x-api-key",priv_key);
+
+var raw = JSON.stringify({
+  "network": "devnet",
+  "wallet_address": "BvBxvs7AtkugYbT2JzTxNHuTr3H9u18LYFwuoVYCuuqQ",
+  "max_depth_size_pair": {
+    "max_depth": 14,
+    "max_buffer_size": 64
+  },
+  "canopy_depth": 10,
+  "fee_payer": "3yTKSCKoDcjBFpbgxyJUh4cM1NG77gFXBimkVBx2hKrf"
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("https://api.shyft.to/sol/v1/nft/compressed/create_tree", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));}
+
+    </script>
+    
+</body>
+</html>
