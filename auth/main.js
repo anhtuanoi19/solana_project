@@ -79,7 +79,7 @@ const API_URL = 'https://api.gameshift.dev/nx/users/';
                 localStorage.setItem('username', username)
 
                 // Chuyển hướng đến trang chủ
-                if (username === 'admin') {
+                if (username === 'admin1') {
                     window.location.href = '../admin/index.html'; // Thay đổi đường dẫn đến trang admin
                 } else {
                     window.location.href = '../index.html'; // Thay đổi đường dẫn đến trang chủ
