@@ -1,5 +1,5 @@
 
-var apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiIwYzQ0MTJhMS04YjEwLTQyNGEtOTE3Ni02ZjZmOThiMjkzNDUiLCJzdWIiOiI0ZTQ2OTE3My1kODUzLTRkNjItYjhjZi0xYWNiMmUzMzQ4ODEiLCJpYXQiOjE3MjE2MjA4OTN9.Ib8MYJ2mi3azi0u2DXMOKw1QYmQyIi0wlRZMI5MGVc8";
+var apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiIxMDM1ZGExYi1hMGQ4LTRkODMtOTkzOC0zNTk4ZmEzZmMwOTEiLCJzdWIiOiIzNTVmZGNiMS0yOTRhLTQ0NjUtOTEwNS0wMDQ3OGQxYzFhMmMiLCJpYXQiOjE3MjI4MjI0MjB9.7UiLh24sJXQGJDwh3PVcC1nsI8cYBXOzbF24UFHSEiU";
 const options = {
     method: 'GET',
     headers: {
@@ -10,7 +10,6 @@ const options = {
 
 
 //Tạo Category
-
 function addAssetCollection() {
   const name = document.getElementById('tenDanhMuc').value;
   const description = document.getElementById('moTaDanhMuc').value;
@@ -75,7 +74,7 @@ function mintNft() {
                 imageUrl: fileInput,
                 name: tenSanPham
             },
-            destinationUserReferenceId: 'admin'
+            destinationUserReferenceId: 'admin1'
         })
     };
 
@@ -89,7 +88,7 @@ function mintNft() {
         .then(response => {
             console.log('Success:', response);
             alert('Mint NFT thành công!');
-            loadDanhSachSanPham();
+            addEventListener();
         })
         .catch(err => {
             console.error('Error:', err);
@@ -101,7 +100,7 @@ function mintNft() {
 //Hiển thị table danh sách sản phẩm
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'https://api.gameshift.dev/nx/items?page=1&perPage=9&ownerReferenceId=1';
-    const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiIwYzQ0MTJhMS04YjEwLTQyNGEtOTE3Ni02ZjZmOThiMjkzNDUiLCJzdWIiOiI0ZTQ2OTE3My1kODUzLTRkNjItYjhjZi0xYWNiMmUzMzQ4ODEiLCJpYXQiOjE3MjE2MjA4OTN9.Ib8MYJ2mi3azi0u2DXMOKw1QYmQyIi0wlRZMI5MGVc8';
+    const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiIxMDM1ZGExYi1hMGQ4LTRkODMtOTkzOC0zNTk4ZmEzZmMwOTEiLCJzdWIiOiIzNTVmZGNiMS0yOTRhLTQ0NjUtOTEwNS0wMDQ3OGQxYzFhMmMiLCJpYXQiOjE3MjI4MjI0MjB9.7UiLh24sJXQGJDwh3PVcC1nsI8cYBXOzbF24UFHSEiU';
 
     const options = {
         method: 'GET',
@@ -162,10 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const editBtn = document.createElement('button');
                     editBtn.className = 'btn btn-warning';
                     editBtn.innerHTML = '<i class="fa fa-edit"></i>';
-                    editBtn.addEventListener('click', () => {
-                        // Thêm hành động sửa sản phẩm ở đây
-                        alert(`Chỉnh sửa ${item.name}`);
-                    });
+                    editBtn.onclick = () => editRow(item);
 
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'btn btn-danger';
@@ -218,6 +214,81 @@ function loadDanhMucSanPham() {
     });
 }
 
+
+let selectedItem = null; // Biến để lưu mục được chọn
+    function editRow(item) {
+        selectedItem = item; // Lưu mục được chọn vào biến
+        document.getElementById('assetCollectionComboboxEdit').value = item.collection.id;
+        document.getElementById('tenSanPhamEdit').value = item.name || '';
+        document.getElementById('giaBanEdit').value = item.attributes.find(attr => attr.traitType === 'GiaTien')?.value || '';
+        document.getElementById('soLuongEdit').value = item.attributes.find(attr => attr.traitType === 'SoLuong')?.value || '';
+        document.getElementById('moTaEdit').value = item.description || '';
+        document.getElementById('fileInputEdit').value = item.imageUrl || '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        addEventListener();
+        loadDanhMucSanPham();
+    });
+
+function updateNft() {
+    // Kiểm tra nếu không có itemId
+    if (!selectedItem) {
+        alert('Vui lòng chọn sản phẩm để sửa.');
+        return;
+    }
+
+    const collectionId = document.getElementById('assetCollectionComboboxEdit').value;
+    const name = document.getElementById('tenSanPhamEdit').value;
+    const price = document.getElementById('giaBanEdit').value;
+    const quantity = document.getElementById('soLuongEdit').value;
+    const description = document.getElementById('moTaEdit').value;
+    const imageUrl = document.getElementById('fileInputEdit').value;
+
+    const itemId = selectedItem.id; // ID của mục được chọn
+    const updateN = {
+        method: 'PUT',
+        headers: {
+            accept: 'application/json',
+            'x-api-key': apiKey,
+            'content-type': 'application/json'
+        }
+    };
+
+    const body = {
+        collectionId,
+        name,
+        attributes: [
+            { traitType: 'GiaTien', value: price },
+            { traitType: 'SoLuong', value: quantity }
+        ],
+        description,
+        imageUrl
+    };
+
+    fetch(`https://api.gameshift.dev/nx/unique-assets/${itemId}`, {
+        ...updateN,
+        body: JSON.stringify(body)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || 'Có lỗi xảy ra.');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            alert("Cập nhật sản phẩm thành công!");
+            addEventListener(); // Tải lại danh sách sản phẩm
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            alert(`Có lỗi xảy ra: ${err.message}`);
+        });
+}
+
 function logout() {
     // Xóa thông tin người dùng từ localStorage
     localStorage.removeItem('username');
@@ -229,4 +300,4 @@ function logout() {
 
 
 loadDanhMucSanPham();
-loadDanhSachSanPham();
+addEventListener();
