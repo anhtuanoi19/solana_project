@@ -431,7 +431,7 @@ function mintNft(itemId, quantity) {
         const tenSanPham = item.name;
         const giaBanAttribute = item.attributes.find(attr => attr.traitType === 'GiaTien');
         const giaBan = giaBanAttribute ? giaBanAttribute.value : 'N/A';
-        const soLuongAttribute = item.attributes.find(attr => attr.traitType === 'SoLuong');
+        const soLuongAttribute = item.attributes.find(attr => attr.traitType === quantity);
         const soLuong = soLuongAttribute ? soLuongAttribute.value : 'N/A';
         const moTa = item.description;
         const fileInput = item.imageUrl;
